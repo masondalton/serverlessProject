@@ -28,3 +28,8 @@ variable "lambda_path" {
   default     = "../lambda" # <-- keep unless you rename folders
 }
 
+variable "cognito_domain_prefix" {
+  type        = string
+  description = "Prefix for the Cognito hosted UI domain (must be globally unique per region)"
+  default     = "avatar-archive-dev" # <-- change to something unique per environment
+}
