@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Techniques - Four Nations Archive</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Techniques</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="benders.html">Benders</a>
+      <a href="nations.html">Nations</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <div class="filters">
+      <label>Element
+        <select id="element-filter">
+          <option value="">All</option>
+          <option>Air</option>
+          <option>Water</option>
+          <option>Earth</option>
+          <option>Fire</option>
+        </select>
+      </label>
+    </div>
+    <div id="techniques-list" class="grid"></div>
+  </main>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const elementFilter = document.getElementById("element-filter");
+    const list = document.getElementById("techniques-list");
+
+    async function loadTechniques() {
+      list.innerHTML = "";
+      try {
+        const items = await Api.listTechniques({ element: elementFilter.value });
+        items.forEach((t) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-title">${t.name}</div>
+            <div>${t.element} • ${t.difficulty || ""}</div>
+            <div>Origin: ${t.origin || "Unknown"}</div>
+            <p>${t.description || ""}</p>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        list.innerHTML = `<p class="error">Failed to load techniques: ${err.message}</p>`;
+      }
+    }
+
+    elementFilter.addEventListener("change", loadTechniques);
+    document.addEventListener("DOMContentLoaded", loadTechniques);
+  </script>
+</body>
+</html>

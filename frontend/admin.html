@@ -54,6 +54,42 @@
     </form>
   </section>
 
+  <section id="techniques-section">
+    <h2>Techniques</h2>
+    <div id="techniques-list" class="grid"></div>
+  </section>
+
+  <section id="technique-form-section">
+    <h2>Add / Update Technique</h2>
+    <form id="technique-form">
+      <label>
+        ID/Name
+        <input type="text" name="id" required />
+      </label>
+      <label>
+        Display Name
+        <input type="text" name="name" required />
+      </label>
+      <label>
+        Element
+        <input type="text" name="element" required />
+      </label>
+      <label>
+        Difficulty
+        <input type="text" name="difficulty" placeholder="Beginner/Intermediate/Advanced" />
+      </label>
+      <label>
+        Origin
+        <input type="text" name="origin" placeholder="Beifong School, Fire Nation, etc." />
+      </label>
+      <label>
+        Description
+        <textarea name="description" rows="3" placeholder="What does it do?"></textarea>
+      </label>
+      <button type="submit">Save Technique</button>
+    </form>
+  </section>
+
   <script src="js/config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/api.js"></script>
@@ -63,6 +99,8 @@
     const logoutBtn = document.getElementById("logout-btn");
     const bendersList = document.getElementById("benders-list");
     const form = document.getElementById("bender-form");
+    const techniquesList = document.getElementById("techniques-list");
+    const techniqueForm = document.getElementById("technique-form");
 
     async function renderBenders() {
       bendersList.innerHTML = "";
@@ -85,14 +123,37 @@
       }
     }
 
+    async function renderTechniques() {
+      techniquesList.innerHTML = "";
+      try {
+        const items = await Api.listTechniques();
+        items.forEach((t) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-title">${t.name}</div>
+            <div>${t.element} • ${t.difficulty || ""}</div>
+            <div>Origin: ${t.origin || "Unknown"}</div>
+            <div class="card-actions">
+              <button data-id="${t.EntityID || t.name}" class="delete-tech-btn">Delete</button>
+            </div>
+          `;
+          techniquesList.appendChild(card);
+        });
+      } catch (err) {
+        techniquesList.innerHTML = `<p class="error">Failed to load techniques: ${err.message}</p>`;
+      }
+    }
+
     async function ensureAuthAndLoad() {
       await Auth.bootstrapAuth();
       if (Auth.isAuthenticated()) {
         statusEl.textContent = "Authenticated";
-        await renderBenders();
+        await Promise.all([renderBenders(), renderTechniques()]);
       } else {
         statusEl.textContent = "Not authenticated";
         bendersList.innerHTML = "<p>Please login to manage benders.</p>";
+        techniquesList.innerHTML = "<p>Please login to manage techniques.</p>";
       }
     }
 
@@ -124,6 +185,23 @@
       }
     });
 
+    techniqueForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!Auth.isAuthenticated()) {
+        alert("Login first");
+        return;
+      }
+
+      const data = Object.fromEntries(new FormData(techniqueForm));
+      try {
+        await Api.upsertTechnique(data);
+        techniqueForm.reset();
+        await renderTechniques();
+      } catch (err) {
+        alert(`Save failed: ${err.message}`);
+      }
+    });
+
     bendersList.addEventListener("click", async (e) => {
       if (e.target.classList.contains("delete-btn")) {
         const id = e.target.getAttribute("data-id");
@@ -135,6 +213,23 @@
         try {
           await Api.deleteBender(id);
           await renderBenders();
+        } catch (err) {
+          alert(`Delete failed: ${err.message}`);
+        }
+      }
+    });
+
+    techniquesList.addEventListener("click", async (e) => {
+      if (e.target.classList.contains("delete-tech-btn")) {
+        const id = e.target.getAttribute("data-id");
+        if (!id) return;
+        if (!Auth.isAuthenticated()) {
+          alert("Login first");
+          return;
+        }
+        try {
+          await Api.deleteTechnique(id);
+          await renderTechniques();
         } catch (err) {
           alert(`Delete failed: ${err.message}`);
         }

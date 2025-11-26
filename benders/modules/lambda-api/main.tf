@@ -22,6 +22,10 @@ variable "lambda_source_dir" {
   type = string
 }
 
+variable "user_pool_arn" {
+  type = string
+}
+
 # Zip up the lambda source directory (your ../lambda folder from root)
 data "archive_file" "lambda_zip" {
   type        = "zip"
@@ -181,6 +185,42 @@ resource "aws_lambda_function" "delete_bender" {
   }
 }
 
+resource "aws_lambda_function" "create_or_update_technique" {
+  function_name = "${var.project_name}-${var.environment}-create-update-technique"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "app.create_or_update_technique"
+  runtime = "python3.11"
+
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  environment {
+    variables = {
+      TABLE_NAME = var.table_name
+      REGION     = var.region
+    }
+  }
+}
+
+resource "aws_lambda_function" "delete_technique" {
+  function_name = "${var.project_name}-${var.environment}-delete-technique"
+
+  role    = aws_iam_role.lambda_role.arn
+  handler = "app.delete_technique"
+  runtime = "python3.11"
+
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  environment {
+    variables = {
+      TABLE_NAME = var.table_name
+      REGION     = var.region
+    }
+  }
+}
+
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.project_name}-${var.environment}-api"
   description = "Four Nations Archive API"
@@ -244,6 +284,18 @@ resource "aws_lambda_permission" "apigw_invoke_get_techniques" {
   function_name = aws_lambda_function.get_techniques.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}
+
+resource "aws_api_gateway_resource" "admin_technique" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_resource.admin.id
+  path_part   = "technique"
+}
+
+resource "aws_api_gateway_resource" "admin_technique_id" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_resource.admin_technique.id
+  path_part   = "{id}"
 }
 
 resource "aws_api_gateway_resource" "nations" {
@@ -330,11 +382,28 @@ resource "aws_api_gateway_resource" "admin_bender_id" {
   path_part   = "{id}"
 }
 
+resource "aws_api_gateway_authorizer" "cognito" {
+  name                   = "${var.project_name}-${var.environment}-cognito-authorizer"
+  rest_api_id            = aws_api_gateway_rest_api.api.id
+  type                   = "COGNITO_USER_POOLS"
+  identity_source        = "method.request.header.Authorization"
+  provider_arns          = [var.user_pool_arn]
+}
+
 resource "aws_api_gateway_method" "create_or_update_bender" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.admin_bender.id
   http_method   = "PUT"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
+}
+
+resource "aws_api_gateway_method" "create_or_update_technique" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.admin_technique.id
+  http_method   = "PUT"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
 }
 
 resource "aws_api_gateway_integration" "create_or_update_bender" {
@@ -354,11 +423,37 @@ resource "aws_lambda_permission" "apigw_invoke_create_or_update_bender" {
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
+resource "aws_api_gateway_integration" "create_or_update_technique" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.admin_technique.id
+  http_method             = aws_api_gateway_method.create_or_update_technique.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.create_or_update_technique.invoke_arn
+}
+
+resource "aws_lambda_permission" "apigw_invoke_create_or_update_technique" {
+  statement_id  = "AllowAPIGatewayInvokeCreateOrUpdateTechnique"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.create_or_update_technique.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}
+
 resource "aws_api_gateway_method" "delete_bender" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.admin_bender_id.id
   http_method   = "DELETE"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
+}
+
+resource "aws_api_gateway_method" "delete_technique" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.admin_technique_id.id
+  http_method   = "DELETE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito.id
 }
 
 resource "aws_api_gateway_integration" "delete_bender" {
@@ -378,6 +473,23 @@ resource "aws_lambda_permission" "apigw_invoke_delete_bender" {
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
+resource "aws_api_gateway_integration" "delete_technique" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.admin_technique_id.id
+  http_method             = aws_api_gateway_method.delete_technique.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.delete_technique.invoke_arn
+}
+
+resource "aws_lambda_permission" "apigw_invoke_delete_technique" {
+  statement_id  = "AllowAPIGatewayInvokeDeleteTechnique"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.delete_technique.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}
+
 resource "aws_api_gateway_deployment" "api_deploy" {
   depends_on = [
     aws_api_gateway_integration.get_benders,
@@ -385,7 +497,9 @@ resource "aws_api_gateway_deployment" "api_deploy" {
     aws_api_gateway_integration.get_nation_lore,
     aws_api_gateway_integration.suggest_element,
     aws_api_gateway_integration.create_or_update_bender,
-    aws_api_gateway_integration.delete_bender
+    aws_api_gateway_integration.delete_bender,
+    aws_api_gateway_integration.create_or_update_technique,
+    aws_api_gateway_integration.delete_technique
   ]
 
   rest_api_id = aws_api_gateway_rest_api.api.id

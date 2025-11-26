@@ -6,3 +6,9 @@ crash.log
 .crash.tfvars
 # Usually commit this:
 #!.terraform.lock.hcl
+
+# Local overrides
+terraform.tfvars
+
+# Generated frontend config
+frontend/js/config.js

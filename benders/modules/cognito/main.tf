@@ -34,6 +34,26 @@ variable "supported_identity_providers" {
   type = list(string)
 }
 
+variable "create_admin_user" {
+  type    = bool
+  default = false
+}
+
+variable "admin_username" {
+  type    = string
+  default = "admin"
+}
+
+variable "admin_email" {
+  type    = string
+  default = "admin@example.com"
+}
+
+variable "admin_temp_password" {
+  type    = string
+  default = "ChangeMe123!"
+}
+
 resource "aws_cognito_user_pool" "this" {
   name = "${var.project_name}-${var.environment}-user-pool"
 
@@ -65,4 +85,20 @@ resource "aws_cognito_user_pool_client" "this" {
 resource "aws_cognito_user_pool_domain" "this" {
   domain       = var.domain_prefix
   user_pool_id = aws_cognito_user_pool.this.id
+}
+
+resource "aws_cognito_user" "admin" {
+  count = var.create_admin_user ? 1 : 0
+
+  user_pool_id = aws_cognito_user_pool.this.id
+  username     = var.admin_username
+  enabled      = true
+
+  temporary_password = var.admin_temp_password
+  message_action     = "SUPPRESS" # avoid sending email/SMS from Terraform
+
+  attributes = {
+    email          = var.admin_email
+    email_verified = "true"
+  }
 }

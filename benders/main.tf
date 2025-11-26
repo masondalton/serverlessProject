@@ -41,6 +41,7 @@ module "lambda_api" {
   table_name        = module.dynamodb.table_name
   table_arn         = module.dynamodb.table_arn
   lambda_source_dir = "${path.module}/../lambda"
+  user_pool_arn     = module.cognito.user_pool_arn
 }
 module "cognito" {
   source = "./modules/cognito"
@@ -50,14 +51,29 @@ module "cognito" {
   region        = var.region
   domain_prefix = var.cognito_domain_prefix
 
-  callback_urls                = ["http://localhost:3000/admin.html"]
-  logout_urls                  = ["http://localhost:3000/"]
+  callback_urls                = var.cognito_callback_urls
+  logout_urls                  = var.cognito_logout_urls
   allowed_oauth_scopes_list    = ["email", "openid"]
   allowed_oauth_flows_list     = ["code"]
   supported_identity_providers = ["COGNITO"]
+  create_admin_user            = var.create_admin_user
+  admin_username               = var.admin_username
+  admin_email                  = var.admin_email
+  admin_temp_password          = var.admin_temp_password
 }
 
+module "cloudfront" {
+  source = "./modules/cloudfront"
 
+  project_name          = var.project_name
+  environment           = var.environment
+  s3_bucket_domain_name = module.s3_frontend.bucket_domain_name
+  s3_website_endpoint   = module.s3_frontend.website_endpoint
+  price_class           = var.cloudfront_price_class
+  custom_domain_name    = var.custom_domain_name
+  acm_certificate_arn   = var.custom_domain_acm_cert_arn
+  hosted_zone_id        = var.custom_domain_hosted_zone_id
+}
 
 resource "local_file" "frontend_config" {
   content = <<EOF
@@ -71,4 +87,3 @@ EOF
 
   filename = "${path.module}/../frontend/js/config.js"
 }
-

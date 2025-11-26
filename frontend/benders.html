@@ -1,6 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benders - Four Nations Archive</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
 <body>
-  <h1>Benders</h1>
-  <div id="benders-list"></div>
+  <header>
+    <h1>Benders</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="techniques.html">Techniques</a>
+      <a href="nations.html">Nations</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <div class="filters">
+      <label>Nation
+        <select id="nation-filter">
+          <option value="">All</option>
+          <option>Air</option>
+          <option>Water</option>
+          <option>Earth</option>
+          <option>Fire</option>
+        </select>
+      </label>
+      <label>Element
+        <select id="element-filter">
+          <option value="">All</option>
+          <option>Air</option>
+          <option>Water</option>
+          <option>Earth</option>
+          <option>Fire</option>
+          <option>Metal</option>
+          <option>Lightning</option>
+        </select>
+      </label>
+    </div>
+    <div id="benders-list" class="grid"></div>
+  </main>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const nationFilter = document.getElementById("nation-filter");
+    const elementFilter = document.getElementById("element-filter");
+    const list = document.getElementById("benders-list");
 
-  <script src="js/benders.js"></script>
+    async function loadBenders() {
+      list.innerHTML = "";
+      try {
+        const benders = await Api.listBenders({
+          nation: nationFilter.value,
+          element: elementFilter.value
+        });
+        benders.forEach((b) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-title">${b.name}</div>
+            <div>${b.nation}</div>
+            <div>${Array.isArray(b.elements) ? b.elements.join(", ") : ""}</div>
+            <p>${b.bio || ""}</p>
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        list.innerHTML = `<p class="error">Failed to load benders: ${err.message}</p>`;
+      }
+    }
+
+    nationFilter.addEventListener("change", loadBenders);
+    elementFilter.addEventListener("change", loadBenders);
+    document.addEventListener("DOMContentLoaded", loadBenders);
+  </script>
 </body>
+</html>

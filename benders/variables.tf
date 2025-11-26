@@ -33,3 +33,63 @@ variable "cognito_domain_prefix" {
   description = "Prefix for the Cognito hosted UI domain (must be globally unique per region)"
   default     = "avatar-archive-dev" # <-- change to something unique per environment
 }
+
+variable "cognito_callback_urls" {
+  type        = list(string)
+  description = "Allowed Cognito callback URLs for the hosted UI redirect"
+  default     = ["http://localhost:3000/admin.html"] # <-- replace with your deployed frontend URL(s)
+}
+
+variable "cognito_logout_urls" {
+  type        = list(string)
+  description = "Allowed Cognito logout URLs for the hosted UI redirect"
+  default     = ["http://localhost:3000/"] # <-- replace with your deployed frontend root URL
+}
+
+variable "create_admin_user" {
+  type        = bool
+  description = "Set to true to seed an initial Cognito admin user"
+  default     = false
+}
+
+variable "admin_username" {
+  type        = string
+  description = "Username for the seeded admin user"
+  default     = "admin"
+}
+
+variable "admin_email" {
+  type        = string
+  description = "Email for the seeded admin user"
+  default     = "admin@example.com"
+}
+
+variable "admin_temp_password" {
+  type        = string
+  description = "Temporary password for the seeded admin user (user must change on first login)"
+  default     = "ChangeMe123!"
+}
+
+variable "cloudfront_price_class" {
+  type        = string
+  description = "CloudFront price class (e.g., PriceClass_100, PriceClass_200, PriceClass_All)"
+  default     = "PriceClass_100"
+}
+
+variable "custom_domain_name" {
+  type        = string
+  description = "Custom domain for the frontend (optional, requires ACM cert in us-east-1)"
+  default     = ""
+}
+
+variable "custom_domain_hosted_zone_id" {
+  type        = string
+  description = "Route53 hosted zone ID for the custom domain (optional)"
+  default     = ""
+}
+
+variable "custom_domain_acm_cert_arn" {
+  type        = string
+  description = "ACM certificate ARN in us-east-1 for the custom domain (required if custom_domain_name set)"
+  default     = ""
+}

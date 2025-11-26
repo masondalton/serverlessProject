@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Your Element - Four Nations Archive</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Find Your Element</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="benders.html">Benders</a>
+      <a href="techniques.html">Techniques</a>
+      <a href="nations.html">Nations</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <form id="quiz-form">
+      <label>
+        Pick a season you vibe with:
+        <select name="season" required>
+          <option value="">Select...</option>
+          <option>Spring</option>
+          <option>Summer</option>
+          <option>Fall</option>
+          <option>Winter</option>
+        </select>
+      </label>
+      <label>
+        Choose a combat style:
+        <select name="style" required>
+          <option value="">Select...</option>
+          <option>Fluid</option>
+          <option>Aggressive</option>
+          <option>Grounded</option>
+          <option>Elusive</option>
+        </select>
+      </label>
+      <label>
+        Ideal travel method:
+        <select name="travel" required>
+          <option value="">Select...</option>
+          <option>Sky Bison</option>
+          <option>Ship</option>
+          <option>Badgermole</option>
+          <option>Dragon</option>
+        </select>
+      </label>
+      <button type="submit">Reveal my element</button>
+    </form>
+    <div id="quiz-result"></div>
+  </main>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const form = document.getElementById("quiz-form");
+    const result = document.getElementById("quiz-result");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      const answers = Object.values(data);
+      try {
+        const resp = await Api.submitQuiz(answers);
+        result.innerHTML = `<p>Your element is: <strong>${resp.element}</strong></p>`;
+      } catch (err) {
+        result.innerHTML = `<p class="error">Failed: ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -134,3 +134,51 @@ def delete_bender(event, context):
         return respond(500, {"error": str(exc)})
 
     return respond(200, {"message": "Bender deleted", "id": bender_id})
+
+
+def create_or_update_technique(event, context):
+    payload = parse_body(event)
+    tech_id = payload.get("id") or payload.get("name")
+    name = payload.get("name")
+    element = payload.get("element")
+    difficulty = payload.get("difficulty", "Intermediate")
+    origin = payload.get("origin", "")
+    description = payload.get("description", "")
+
+    if not tech_id or not name or not element:
+        return respond(400, {"error": "id/name/element are required"})
+
+    item = {
+        "EntityType": "Technique",
+        "EntityID": tech_id,
+        "name": name,
+        "element": element,
+        "difficulty": difficulty,
+        "origin": origin,
+        "description": description,
+    }
+
+    try:
+        table.put_item(Item=item)
+    except Exception as exc:
+        return respond(500, {"error": str(exc)})
+
+    return respond(200, {"message": "Technique upserted", "technique": item})
+
+
+def delete_technique(event, context):
+    tech_id = (event.get("pathParameters") or {}).get("id")
+    if not tech_id:
+        return respond(400, {"error": "Missing technique id"})
+
+    try:
+        table.delete_item(
+            Key={"EntityType": "Technique", "EntityID": tech_id},
+            ConditionExpression=Attr("EntityID").exists()
+        )
+    except table.meta.client.exceptions.ConditionalCheckFailedException:
+        return respond(404, {"error": "Technique not found"})
+    except Exception as exc:
+        return respond(500, {"error": str(exc)})
+
+    return respond(200, {"message": "Technique deleted", "id": tech_id})

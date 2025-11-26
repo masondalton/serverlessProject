@@ -27,3 +27,8 @@ output "cognito_hosted_ui_domain" {
   description = "Cognito hosted UI domain"
   value       = module.cognito.hosted_ui_domain
 }
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name for the frontend"
+  value       = module.cloudfront.cloudfront_domain_name
+}

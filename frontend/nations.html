@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nations - Four Nations Archive</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Nation Lore</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="benders.html">Benders</a>
+      <a href="techniques.html">Techniques</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <div id="nations" class="grid"></div>
+  </main>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    const nations = ["Air", "Water", "Earth", "Fire"];
+    const container = document.getElementById("nations");
+
+    async function loadNations() {
+      container.innerHTML = "";
+      for (const name of nations) {
+        try {
+          const data = await Api.getNation(name);
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-title">${data.name || name}</div>
+            <p>${data.lore || "No lore available."}</p>
+          `;
+          container.appendChild(card);
+        } catch (err) {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `<div class="card-title">${name}</div><p class="error">${err.message}</p>`;
+          container.appendChild(card);
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadNations);
+  </script>
+</body>
+</html>
