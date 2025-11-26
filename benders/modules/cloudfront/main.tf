@@ -21,26 +21,26 @@ variable "price_class" {
   default = "PriceClass_100"
 }
 
-variable "custom_domain_name" {
-  type        = string
-  default     = ""
-  description = "Custom domain for CloudFront (optional)"
+variable "custom_domain_names" {
+  type        = list(string)
+  default     = []
+  description = "Custom domain aliases for CloudFront (optional, requires ACM cert in us-east-1)"
 }
 
 variable "acm_certificate_arn" {
   type        = string
   default     = ""
-  description = "ACM certificate ARN in us-east-1 for the custom domain (required if custom_domain_name is set)"
+  description = "ACM certificate ARN in us-east-1 for the custom domain aliases (required if custom_domain_names set)"
 }
 
 variable "hosted_zone_id" {
   type        = string
   default     = ""
-  description = "Route53 hosted zone ID for creating an alias record to CloudFront (optional)"
+  description = "Route53 hosted zone ID for creating alias records to CloudFront (optional)"
 }
 
 locals {
-  use_custom_domain = var.custom_domain_name != "" && var.acm_certificate_arn != ""
+  use_custom_domain = length(var.custom_domain_names) > 0 && var.acm_certificate_arn != ""
 }
 
 resource "aws_cloudfront_distribution" "this" {
@@ -76,7 +76,7 @@ resource "aws_cloudfront_distribution" "this" {
     }
   }
 
-  aliases = local.use_custom_domain ? [var.custom_domain_name] : []
+  aliases = local.use_custom_domain ? var.custom_domain_names : []
 
   viewer_certificate {
     acm_certificate_arn            = local.use_custom_domain ? var.acm_certificate_arn : null
@@ -93,8 +93,9 @@ resource "aws_cloudfront_distribution" "this" {
 }
 
 resource "aws_route53_record" "this" {
-  count   = local.use_custom_domain && var.hosted_zone_id != "" ? 1 : 0
-  name    = var.custom_domain_name
+  for_each = local.use_custom_domain && var.hosted_zone_id != "" ? toset(var.custom_domain_names) : []
+
+  name    = each.value
   type    = "A"
   zone_id = var.hosted_zone_id
 

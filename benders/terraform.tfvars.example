@@ -5,13 +5,9 @@ region       = "us-east-1"
 # Must be globally unique per region; change for each teammate to avoid collisions
 cognito_domain_prefix = "avatar-archive-dev-yourinitials"
 
-# For localhost testing
-cognito_callback_urls = ["http://localhost:3000/admin.html"]
-cognito_logout_urls   = ["http://localhost:3000/"]
-
-# For deployed frontend (swap these in when you have a domain/bucket URL)
-# cognito_callback_urls = ["https://yourdomain.com/admin.html"]
-# cognito_logout_urls   = ["https://yourdomain.com/"]
+# If left empty, defaults to CloudFront domain + /admin.html and /
+cognito_callback_urls = []
+cognito_logout_urls   = []
 
 # Seed an admin user (user must change password on first login)
 create_admin_user   = true
@@ -20,8 +16,8 @@ admin_email         = "admin@example.com"
 admin_temp_password = "ChangeMe123!"
 
 # CloudFront / custom domain (optional)
-# If using a custom domain, you need an ACM cert in us-east-1 and the hosted zone ID.
-custom_domain_name          = ""
+# If using custom domains, you need an ACM cert in us-east-1 and the hosted zone ID.
+custom_domain_names         = []
 custom_domain_acm_cert_arn  = ""
 custom_domain_hosted_zone_id = ""
 cloudfront_price_class      = "PriceClass_100"

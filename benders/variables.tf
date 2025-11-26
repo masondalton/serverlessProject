@@ -37,13 +37,13 @@ variable "cognito_domain_prefix" {
 variable "cognito_callback_urls" {
   type        = list(string)
   description = "Allowed Cognito callback URLs for the hosted UI redirect"
-  default     = ["http://localhost:3000/admin.html"] # <-- replace with your deployed frontend URL(s)
+  default     = [] # If empty, will default to CloudFront/S3 endpoint
 }
 
 variable "cognito_logout_urls" {
   type        = list(string)
   description = "Allowed Cognito logout URLs for the hosted UI redirect"
-  default     = ["http://localhost:3000/"] # <-- replace with your deployed frontend root URL
+  default     = [] # If empty, will default to CloudFront/S3 endpoint
 }
 
 variable "create_admin_user" {
@@ -76,20 +76,20 @@ variable "cloudfront_price_class" {
   default     = "PriceClass_100"
 }
 
-variable "custom_domain_name" {
-  type        = string
-  description = "Custom domain for the frontend (optional, requires ACM cert in us-east-1)"
-  default     = ""
+variable "custom_domain_names" {
+  type        = list(string)
+  description = "Custom domain aliases for the frontend (optional, requires ACM cert in us-east-1)"
+  default     = []
 }
 
 variable "custom_domain_hosted_zone_id" {
   type        = string
-  description = "Route53 hosted zone ID for the custom domain (optional)"
+  description = "Route53 hosted zone ID for the custom domain aliases (optional)"
   default     = ""
 }
 
 variable "custom_domain_acm_cert_arn" {
   type        = string
-  description = "ACM certificate ARN in us-east-1 for the custom domain (required if custom_domain_name set)"
+  description = "ACM certificate ARN in us-east-1 for the custom domain aliases (required if custom_domain_names set)"
   default     = ""
 }

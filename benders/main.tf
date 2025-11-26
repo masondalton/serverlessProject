@@ -51,8 +51,8 @@ module "cognito" {
   region        = var.region
   domain_prefix = var.cognito_domain_prefix
 
-  callback_urls                = var.cognito_callback_urls
-  logout_urls                  = var.cognito_logout_urls
+  callback_urls                = local.cognito_callback_urls
+  logout_urls                  = local.cognito_logout_urls
   allowed_oauth_scopes_list    = ["email", "openid"]
   allowed_oauth_flows_list     = ["code"]
   supported_identity_providers = ["COGNITO"]
@@ -70,9 +70,15 @@ module "cloudfront" {
   s3_bucket_domain_name = module.s3_frontend.bucket_domain_name
   s3_website_endpoint   = module.s3_frontend.website_endpoint
   price_class           = var.cloudfront_price_class
-  custom_domain_name    = var.custom_domain_name
+  custom_domain_names   = var.custom_domain_names
   acm_certificate_arn   = var.custom_domain_acm_cert_arn
   hosted_zone_id        = var.custom_domain_hosted_zone_id
+}
+
+locals {
+  frontend_base         = length(var.custom_domain_names) > 0 ? "https://${var.custom_domain_names[0]}" : "https://${module.cloudfront.cloudfront_domain_name}"
+  cognito_callback_urls = length(var.cognito_callback_urls) > 0 ? var.cognito_callback_urls : ["${local.frontend_base}/admin.html"]
+  cognito_logout_urls   = length(var.cognito_logout_urls) > 0 ? var.cognito_logout_urls : ["${local.frontend_base}/"]
 }
 
 resource "local_file" "frontend_config" {
