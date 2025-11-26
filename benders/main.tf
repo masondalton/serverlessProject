@@ -8,6 +8,10 @@ terraform {
       source  = "hashicorp/archive"
       version = "~> 2.0"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -38,18 +42,22 @@ module "lambda_api" {
   table_arn         = module.dynamodb.table_arn
   lambda_source_dir = "${path.module}/../lambda"
 }
-
 module "cognito" {
-  source                       = "./modules/cognito"
-  project_name                 = var.project_name
-  environment                  = var.environment
-  domain_prefix                = var.cognito_domain_prefix
+  source = "./modules/cognito"
+
+  project_name  = var.project_name
+  environment   = var.environment
+  region        = var.region
+  domain_prefix = var.cognito_domain_prefix
+
   callback_urls                = ["http://localhost:3000/admin.html"]
   logout_urls                  = ["http://localhost:3000/"]
-  allowed_oauth_scopes         = ["email", "openid"]
-  allowed_oauth_flows          = ["code"]
+  allowed_oauth_scopes_list    = ["email", "openid"]
+  allowed_oauth_flows_list     = ["code"]
   supported_identity_providers = ["COGNITO"]
 }
+
+
 
 resource "local_file" "frontend_config" {
   content = <<EOF

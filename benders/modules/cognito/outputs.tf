@@ -11,7 +11,6 @@ output "user_pool_client_id" {
 }
 
 output "hosted_ui_domain" {
-  value = "${aws_cognito_user_pool_domain.this.domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
+  # e.g. https://your-prefix.auth.us-east-1.amazoncognito.com
+  value = "https://${aws_cognito_user_pool_domain.this.domain}.auth.${var.region}.amazoncognito.com"
 }
-
-data "aws_region" "current" {}
