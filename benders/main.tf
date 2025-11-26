@@ -205,3 +205,14 @@ resource "aws_api_gateway_stage" "prod" {
   stage_name    = "prod"
 }
 
+resource "local_file" "frontend_config" {
+  content = <<EOF
+window.APP_CONFIG = {
+  API_BASE: "https://${aws_api_gateway_rest_api.api.id}.execute-api.${var.region}.amazonaws.com/${aws_api_gateway_stage.prod.stage_name}"
+};
+EOF
+
+  filename = "${path.module}/../frontend/js/config.js"
+}
+
+
