@@ -82,6 +82,19 @@ locals {
   cognito_logout_urls   = length(var.cognito_logout_urls) > 0 ? var.cognito_logout_urls : ["${local.frontend_base}/"]
 }
 
+module "codepipeline" {
+  count = var.enable_codepipeline ? 1 : 0
+
+  source = "./modules/codepipeline"
+
+  project_name            = var.project_name
+  environment             = var.environment
+  frontend_bucket_name    = module.s3_frontend.bucket_name
+  codestar_connection_arn = var.codestar_connection_arn
+  repository_id           = "masondalton/serverlessProject"
+  branch                  = "main"
+}
+
 resource "local_file" "frontend_config" {
   content = <<EOF
 window.APP_CONFIG = {

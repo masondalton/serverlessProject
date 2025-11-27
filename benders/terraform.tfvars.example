@@ -21,3 +21,7 @@ custom_domain_names         = []
 custom_domain_acm_cert_arn  = ""
 custom_domain_hosted_zone_id = ""
 cloudfront_price_class      = "PriceClass_100"
+
+# CodePipeline (optional; set enable_codepipeline=true and provide your CodeStar connection ARN)
+enable_codepipeline      = false
+codestar_connection_arn  = ""

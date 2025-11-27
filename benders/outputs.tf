@@ -32,3 +32,8 @@ output "cloudfront_domain_name" {
   description = "CloudFront distribution domain name for the frontend"
   value       = module.cloudfront.cloudfront_domain_name
 }
+
+output "codepipeline_name" {
+  description = "CodePipeline name (if enabled)"
+  value       = var.enable_codepipeline ? module.codepipeline[0].pipeline_name : ""
+}

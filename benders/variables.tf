@@ -93,3 +93,15 @@ variable "custom_domain_acm_cert_arn" {
   description = "ACM certificate ARN in us-east-1 for the custom domain aliases (required if custom_domain_names set)"
   default     = ""
 }
+
+variable "enable_codepipeline" {
+  type        = bool
+  description = "Enable CodePipeline/CodeBuild for frontend deploys"
+  default     = false
+}
+
+variable "codestar_connection_arn" {
+  type        = string
+  description = "CodeStar Connections ARN for GitHub source (required if enable_codepipeline)"
+  default     = ""
+}
