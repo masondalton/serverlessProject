@@ -20,9 +20,10 @@
   <main>
     <div id="nations" class="grid"></div>
   </main>
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
   <script>
+    const placeholder = "/img/nation-placeholder.png";
     const nations = ["Air", "Water", "Earth", "Fire"];
     const container = document.getElementById("nations");
 
@@ -31,9 +32,11 @@
       for (const name of nations) {
         try {
           const data = await Api.getNation(name);
+          const imgSrc = data.imageUrl || placeholder;
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
+            <img src="${imgSrc}" alt="${data.name || name}" onerror="this.src='${placeholder}'" />
             <div class="card-title">${data.name || name}</div>
             <p>${data.lore || "No lore available."}</p>
           `;

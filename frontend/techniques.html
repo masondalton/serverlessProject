@@ -31,9 +31,10 @@
     </div>
     <div id="techniques-list" class="grid"></div>
   </main>
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
   <script>
+    const placeholder = "/img/technique-placeholder.png";
     const elementFilter = document.getElementById("element-filter");
     const list = document.getElementById("techniques-list");
 
@@ -42,9 +43,11 @@
       try {
         const items = await Api.listTechniques({ element: elementFilter.value });
         items.forEach((t) => {
+          const imgSrc = t.imageUrl || placeholder;
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
+            <img src="${imgSrc}" alt="${t.name}" onerror="this.src='${placeholder}'" />
             <div class="card-title">${t.name}</div>
             <div>${t.element} • ${t.difficulty || ""}</div>
             <div>Origin: ${t.origin || "Unknown"}</div>

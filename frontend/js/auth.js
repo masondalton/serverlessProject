@@ -2,6 +2,12 @@
   const config = window.APP_CONFIG || {};
   const TOKEN_KEY_ID = "avatar_id_token";
   const TOKEN_KEY_ACCESS = "avatar_access_token";
+  const cognitoBase = (() => {
+    if (!config.COGNITO_DOMAIN) return "";
+    return config.COGNITO_DOMAIN.startsWith("http")
+      ? config.COGNITO_DOMAIN
+      : `https://${config.COGNITO_DOMAIN}`;
+  })();
 
   function baseRedirectUri() {
     return `${window.location.origin}${window.location.pathname}`;
@@ -14,7 +20,7 @@
       scope: "openid email",
       redirect_uri: baseRedirectUri()
     });
-    return `https://${config.COGNITO_DOMAIN}/login?${params.toString()}`;
+    return `${cognitoBase}/login?${params.toString()}`;
   }
 
   function logoutUrl() {
@@ -23,7 +29,7 @@
       logout_uri: `${window.location.origin}/`,
       redirect_uri: `${window.location.origin}/`
     });
-    return `https://${config.COGNITO_DOMAIN}/logout?${params.toString()}`;
+    return `${cognitoBase}/logout?${params.toString()}`;
   }
 
   function storeTokens({ id_token, access_token }) {
@@ -49,7 +55,7 @@
   }
 
   async function exchangeCodeForTokens(authCode) {
-    const tokenUrl = `https://${config.COGNITO_DOMAIN}/oauth2/token`;
+    const tokenUrl = `${cognitoBase}/oauth2/token`;
     const body = new URLSearchParams({
       grant_type: "authorization_code",
       client_id: config.COGNITO_CLIENT_ID,

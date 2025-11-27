@@ -42,9 +42,10 @@
     </div>
     <div id="benders-list" class="grid"></div>
   </main>
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
   <script>
+    const placeholder = "/img/bender-placeholder.png";
     const nationFilter = document.getElementById("nation-filter");
     const elementFilter = document.getElementById("element-filter");
     const list = document.getElementById("benders-list");
@@ -57,9 +58,11 @@
           element: elementFilter.value
         });
         benders.forEach((b) => {
+          const imgSrc = b.imageUrl || placeholder;
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
+            <img src="${imgSrc}" alt="${b.name}" onerror="this.src='${placeholder}'" />
             <div class="card-title">${b.name}</div>
             <div>${b.nation}</div>
             <div>${Array.isArray(b.elements) ? b.elements.join(", ") : ""}</div>

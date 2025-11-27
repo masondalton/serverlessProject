@@ -12,9 +12,11 @@
     <p>Manage benders (requires Cognito login).</p>
   </header>
 
-  <section id="auth-section">
-    <button id="login-btn">Login with Cognito</button>
-    <button id="logout-btn" class="secondary">Logout</button>
+  <section id="auth-section" class="stack">
+    <div>
+      <button id="login-btn">Login with Cognito</button>
+      <button id="logout-btn" class="secondary">Logout</button>
+    </div>
     <span id="auth-status"></span>
   </section>
 
@@ -25,33 +27,35 @@
 
   <section id="form-section">
     <h2>Add / Update Bender</h2>
-    <form id="bender-form">
-      <label>
-        ID/Name
-        <input type="text" name="id" required />
-      </label>
-      <label>
-        Display Name
-        <input type="text" name="name" required />
-      </label>
-      <label>
-        Nation
-        <input type="text" name="nation" required />
-      </label>
-      <label>
-        Elements (comma separated)
-        <input type="text" name="elements" placeholder="Air, Water, Earth, Fire" required />
-      </label>
-      <label>
-        Image URL
-        <input type="url" name="imageUrl" placeholder="https://example.com/image.png" />
-      </label>
-      <label>
-        Bio
-        <textarea name="bio" rows="3" placeholder="Short description"></textarea>
-      </label>
-      <button type="submit">Save Bender</button>
-    </form>
+    <div class="form-grid">
+      <form id="bender-form" class="form-card stack">
+        <label>
+          ID/Name
+          <input type="text" name="id" required />
+        </label>
+        <label>
+          Display Name
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          Nation
+          <input type="text" name="nation" required />
+        </label>
+        <label>
+          Elements (comma separated)
+          <input type="text" name="elements" placeholder="Air, Water, Earth, Fire" required />
+        </label>
+        <label>
+          Image URL
+          <input type="url" name="imageUrl" placeholder="https://example.com/image.png" />
+        </label>
+        <label>
+          Bio
+          <textarea name="bio" rows="3" placeholder="Short description"></textarea>
+        </label>
+        <button type="submit">Save Bender</button>
+      </form>
+    </div>
   </section>
 
   <section id="techniques-section">
@@ -61,38 +65,40 @@
 
   <section id="technique-form-section">
     <h2>Add / Update Technique</h2>
-    <form id="technique-form">
-      <label>
-        ID/Name
-        <input type="text" name="id" required />
-      </label>
-      <label>
-        Display Name
-        <input type="text" name="name" required />
-      </label>
-      <label>
-        Element
-        <input type="text" name="element" required />
-      </label>
-      <label>
-        Difficulty
-        <input type="text" name="difficulty" placeholder="Beginner/Intermediate/Advanced" />
-      </label>
-      <label>
-        Origin
-        <input type="text" name="origin" placeholder="Beifong School, Fire Nation, etc." />
-      </label>
-      <label>
-        Description
-        <textarea name="description" rows="3" placeholder="What does it do?"></textarea>
-      </label>
-      <button type="submit">Save Technique</button>
-    </form>
+    <div class="form-grid">
+      <form id="technique-form" class="form-card stack">
+        <label>
+          ID/Name
+          <input type="text" name="id" required />
+        </label>
+        <label>
+          Display Name
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          Element
+          <input type="text" name="element" required />
+        </label>
+        <label>
+          Difficulty
+          <input type="text" name="difficulty" placeholder="Beginner/Intermediate/Advanced" />
+        </label>
+        <label>
+          Origin
+          <input type="text" name="origin" placeholder="Beifong School, Fire Nation, etc." />
+        </label>
+        <label>
+          Description
+          <textarea name="description" rows="3" placeholder="What does it do?"></textarea>
+        </label>
+        <button type="submit">Save Technique</button>
+      </form>
+    </div>
   </section>
 
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/api.js"></script>
+  <script src="js/config.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+  <script src="js/api.js?v=2"></script>
   <script>
     const statusEl = document.getElementById("auth-status");
     const loginBtn = document.getElementById("login-btn");
