@@ -1,248 +1,283 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Four Nations Archive - Admin</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <header>
-    <h1>Four Nations Archive Admin</h1>
-    <p>Manage benders (requires Cognito login).</p>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Four Nations Archive - Admin</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Four Nations Archive Admin</h1>
+      <p>Manage benders (requires Cognito login).</p>
+    </header>
 
-  <section id="auth-section" class="stack">
-    <div>
-      <button id="login-btn">Login with Cognito</button>
-      <button id="logout-btn" class="secondary">Logout</button>
-    </div>
-    <span id="auth-status"></span>
-  </section>
+    <section id="auth-section" class="stack">
+      <div>
+        <button id="login-btn">Login with Cognito</button>
+        <button id="logout-btn" class="secondary">Logout</button>
+      </div>
+      <span id="auth-status"></span>
+    </section>
 
-  <section id="benders-section">
-    <h2>Benders</h2>
-    <div id="benders-list" class="grid"></div>
-  </section>
+    <section id="benders-section">
+      <h2>Benders</h2>
+      <div id="benders-list" class="grid"></div>
+    </section>
 
-  <section id="form-section">
-    <h2>Add / Update Bender</h2>
-    <div class="form-grid">
-      <form id="bender-form" class="form-card stack">
-        <label>
-          ID/Name
-          <input type="text" name="id" required />
-        </label>
-        <label>
-          Display Name
-          <input type="text" name="name" required />
-        </label>
-        <label>
-          Nation
-          <input type="text" name="nation" required />
-        </label>
-        <label>
-          Elements (comma separated)
-          <input type="text" name="elements" placeholder="Air, Water, Earth, Fire" required />
-        </label>
-        <label>
-          Image URL
-          <input type="url" name="imageUrl" placeholder="https://example.com/image.png" />
-        </label>
-        <label>
-          Bio
-          <textarea name="bio" rows="3" placeholder="Short description"></textarea>
-        </label>
-        <button type="submit">Save Bender</button>
-      </form>
-    </div>
-  </section>
+    <section id="form-section">
+      <h2>Add / Update Bender</h2>
+      <div class="form-grid">
+        <form id="bender-form" class="form-card stack">
+          <label>
+            ID/Name
+            <input type="text" name="id" required />
+          </label>
+          <label>
+            Display Name
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            Nation
+            <input type="text" name="nation" required />
+          </label>
+          <label>
+            Elements (comma separated)
+            <input
+              type="text"
+              name="elements"
+              placeholder="Air, Water, Earth, Fire"
+              required
+            />
+          </label>
+          <label>
+            Image URL
+            <input
+              type="url"
+              name="imageUrl"
+              placeholder="https://example.com/image.png"
+            />
+          </label>
+          <label>
+            Bio
+            <textarea
+              name="bio"
+              rows="3"
+              placeholder="Short description"
+            ></textarea>
+          </label>
+          <button type="submit">Save Bender</button>
+        </form>
+      </div>
+    </section>
 
-  <section id="techniques-section">
-    <h2>Techniques</h2>
-    <div id="techniques-list" class="grid"></div>
-  </section>
+    <section id="techniques-section">
+      <h2>Techniques</h2>
+      <div id="techniques-list" class="grid"></div>
+    </section>
 
-  <section id="technique-form-section">
-    <h2>Add / Update Technique</h2>
-    <div class="form-grid">
-      <form id="technique-form" class="form-card stack">
-        <label>
-          ID/Name
-          <input type="text" name="id" required />
-        </label>
-        <label>
-          Display Name
-          <input type="text" name="name" required />
-        </label>
-        <label>
-          Element
-          <input type="text" name="element" required />
-        </label>
-        <label>
-          Difficulty
-          <input type="text" name="difficulty" placeholder="Beginner/Intermediate/Advanced" />
-        </label>
-        <label>
-          Origin
-          <input type="text" name="origin" placeholder="Beifong School, Fire Nation, etc." />
-        </label>
-        <label>
-          Description
-          <textarea name="description" rows="3" placeholder="What does it do?"></textarea>
-        </label>
-        <button type="submit">Save Technique</button>
-      </form>
-    </div>
-  </section>
+    <section id="technique-form-section">
+      <h2>Add / Update Technique</h2>
+      <div class="form-grid">
+        <form id="technique-form" class="form-card stack">
+          <label>
+            ID/Name
+            <input type="text" name="id" required />
+          </label>
+          <label>
+            Display Name
+            <input type="text" name="name" required />
+          </label>
+          <label>
+            Element
+            <input type="text" name="element" required />
+          </label>
+          <label>
+            Difficulty
+            <input
+              type="text"
+              name="difficulty"
+              placeholder="Beginner/Intermediate/Advanced"
+            />
+          </label>
+          <label>
+            Origin
+            <input
+              type="text"
+              name="origin"
+              placeholder="Beifong School, Fire Nation, etc."
+            />
+          </label>
+          <label>
+            Description
+            <textarea
+              name="description"
+              rows="3"
+              placeholder="What does it do?"
+            ></textarea>
+          </label>
+          <button type="submit">Save Technique</button>
+        </form>
+      </div>
+    </section>
 
-  <script src="js/config.js?v=2"></script>
-  <script src="js/auth.js?v=2"></script>
-  <script src="js/api.js?v=2"></script>
-  <script>
-    const statusEl = document.getElementById("auth-status");
-    const loginBtn = document.getElementById("login-btn");
-    const logoutBtn = document.getElementById("logout-btn");
-    const bendersList = document.getElementById("benders-list");
-    const form = document.getElementById("bender-form");
-    const techniquesList = document.getElementById("techniques-list");
-    const techniqueForm = document.getElementById("technique-form");
+    <script src="js/config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/api.js?v=2"></script>
+    <script>
+      const statusEl = document.getElementById("auth-status");
+      const loginBtn = document.getElementById("login-btn");
+      const logoutBtn = document.getElementById("logout-btn");
+      const bendersList = document.getElementById("benders-list");
+      const form = document.getElementById("bender-form");
+      const techniquesList = document.getElementById("techniques-list");
+      const techniqueForm = document.getElementById("technique-form");
 
-    async function renderBenders() {
-      bendersList.innerHTML = "";
-      try {
-        const benders = await Api.listBenders();
-        benders.forEach((b) => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
+      async function renderBenders() {
+        bendersList.innerHTML = "";
+        try {
+          const benders = await Api.listBenders();
+          benders.forEach((b) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
             <div class="card-title">${b.name}</div>
-            <div>${b.nation} — ${Array.isArray(b.elements) ? b.elements.join(", ") : ""}</div>
+            <div>${b.nation} — ${
+              Array.isArray(b.elements) ? b.elements.join(", ") : ""
+            }</div>
             <div class="card-actions">
-              <button data-id="${b.EntityID || b.name}" class="delete-btn">Delete</button>
+              <button data-id="${
+                b.EntityID || b.name
+              }" class="delete-btn">Delete</button>
             </div>
           `;
-          bendersList.appendChild(card);
-        });
-      } catch (err) {
-        bendersList.innerHTML = `<p class="error">Failed to load benders: ${err.message}</p>`;
+            bendersList.appendChild(card);
+          });
+        } catch (err) {
+          bendersList.innerHTML = `<p class="error">Failed to load benders: ${err.message}</p>`;
+        }
       }
-    }
 
-    async function renderTechniques() {
-      techniquesList.innerHTML = "";
-      try {
-        const items = await Api.listTechniques();
-        items.forEach((t) => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
+      async function renderTechniques() {
+        techniquesList.innerHTML = "";
+        try {
+          const items = await Api.listTechniques();
+          items.forEach((t) => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
             <div class="card-title">${t.name}</div>
             <div>${t.element} • ${t.difficulty || ""}</div>
             <div>Origin: ${t.origin || "Unknown"}</div>
             <div class="card-actions">
-              <button data-id="${t.EntityID || t.name}" class="delete-tech-btn">Delete</button>
+              <button data-id="${
+                t.EntityID || t.name
+              }" class="delete-tech-btn">Delete</button>
             </div>
           `;
-          techniquesList.appendChild(card);
-        });
-      } catch (err) {
-        techniquesList.innerHTML = `<p class="error">Failed to load techniques: ${err.message}</p>`;
-      }
-    }
-
-    async function ensureAuthAndLoad() {
-      await Auth.bootstrapAuth();
-      if (Auth.isAuthenticated()) {
-        statusEl.textContent = "Authenticated";
-        await Promise.all([renderBenders(), renderTechniques()]);
-      } else {
-        statusEl.textContent = "Not authenticated";
-        bendersList.innerHTML = "<p>Please login to manage benders.</p>";
-        techniquesList.innerHTML = "<p>Please login to manage techniques.</p>";
-      }
-    }
-
-    loginBtn.addEventListener("click", () => {
-      window.location.href = Auth.loginUrl();
-    });
-
-    logoutBtn.addEventListener("click", () => {
-      Auth.clearTokens();
-      window.location.href = Auth.logoutUrl();
-    });
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!Auth.isAuthenticated()) {
-        alert("Login first");
-        return;
+            techniquesList.appendChild(card);
+          });
+        } catch (err) {
+          techniquesList.innerHTML = `<p class="error">Failed to load techniques: ${err.message}</p>`;
+        }
       }
 
-      const data = Object.fromEntries(new FormData(form));
-      data.elements = data.elements.split(",").map((s) => s.trim()).filter(Boolean);
-
-      try {
-        await Api.upsertBender(data);
-        form.reset();
-        await renderBenders();
-      } catch (err) {
-        alert(`Save failed: ${err.message}`);
-      }
-    });
-
-    techniqueForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!Auth.isAuthenticated()) {
-        alert("Login first");
-        return;
+      async function ensureAuthAndLoad() {
+        await Auth.bootstrapAuth();
+        if (Auth.isAuthenticated()) {
+          statusEl.textContent = "Authenticated";
+          await Promise.all([renderBenders(), renderTechniques()]);
+        } else {
+          statusEl.textContent = "Not authenticated";
+          bendersList.innerHTML = "<p>Please login to manage benders.</p>";
+          techniquesList.innerHTML =
+            "<p>Please login to manage techniques.</p>";
+        }
       }
 
-      const data = Object.fromEntries(new FormData(techniqueForm));
-      try {
-        await Api.upsertTechnique(data);
-        techniqueForm.reset();
-        await renderTechniques();
-      } catch (err) {
-        alert(`Save failed: ${err.message}`);
-      }
-    });
+      loginBtn.addEventListener("click", () => {
+        window.location.href = Auth.loginUrl();
+      });
 
-    bendersList.addEventListener("click", async (e) => {
-      if (e.target.classList.contains("delete-btn")) {
-        const id = e.target.getAttribute("data-id");
-        if (!id) return;
+      logoutBtn.addEventListener("click", () => {
+        Auth.clearTokens();
+        window.location.href = Auth.logoutUrl();
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
         if (!Auth.isAuthenticated()) {
           alert("Login first");
           return;
         }
+
+        const data = Object.fromEntries(new FormData(form));
+        data.elements = data.elements
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+
         try {
-          await Api.deleteBender(id);
+          await Api.upsertBender(data);
+          form.reset();
           await renderBenders();
         } catch (err) {
-          alert(`Delete failed: ${err.message}`);
+          alert(`Save failed: ${err.message}`);
         }
-      }
-    });
+      });
 
-    techniquesList.addEventListener("click", async (e) => {
-      if (e.target.classList.contains("delete-tech-btn")) {
-        const id = e.target.getAttribute("data-id");
-        if (!id) return;
+      techniqueForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
         if (!Auth.isAuthenticated()) {
           alert("Login first");
           return;
         }
+
+        const data = Object.fromEntries(new FormData(techniqueForm));
         try {
-          await Api.deleteTechnique(id);
+          await Api.upsertTechnique(data);
+          techniqueForm.reset();
           await renderTechniques();
         } catch (err) {
-          alert(`Delete failed: ${err.message}`);
+          alert(`Save failed: ${err.message}`);
         }
-      }
-    });
+      });
 
-    document.addEventListener("DOMContentLoaded", ensureAuthAndLoad);
-  </script>
-</body>
+      bendersList.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("delete-btn")) {
+          const id = e.target.getAttribute("data-id");
+          if (!id) return;
+          if (!Auth.isAuthenticated()) {
+            alert("Login first");
+            return;
+          }
+          try {
+            await Api.deleteBender(id);
+            await renderBenders();
+          } catch (err) {
+            alert(`Delete failed: ${err.message}`);
+          }
+        }
+      });
+
+      techniquesList.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("delete-tech-btn")) {
+          const id = e.target.getAttribute("data-id");
+          if (!id) return;
+          if (!Auth.isAuthenticated()) {
+            alert("Login first");
+            return;
+          }
+          try {
+            await Api.deleteTechnique(id);
+            await renderTechniques();
+          } catch (err) {
+            alert(`Delete failed: ${err.message}`);
+          }
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", ensureAuthAndLoad);
+    </script>
+  </body>
 </html>
