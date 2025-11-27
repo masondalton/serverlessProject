@@ -19,6 +19,17 @@ def respond(status, body):
     }
 
 
+def clean(obj):
+    """Convert DynamoDB types (e.g., sets) to JSON-serializable structures."""
+    if isinstance(obj, set):
+        return list(obj)
+    if isinstance(obj, list):
+        return [clean(o) for o in obj]
+    if isinstance(obj, dict):
+        return {k: clean(v) for k, v in obj.items()}
+    return obj
+
+
 def parse_body(event):
     try:
         return json.loads(event.get("body") or "{}")
@@ -28,20 +39,22 @@ def parse_body(event):
 
 def get_benders(event, context):
     params = event.get("queryStringParameters") or {}
-    filter_expr = Attr("EntityType").eq("Bender")
-
-    if params.get("nation"):
-        filter_expr = filter_expr & Attr("nation").eq(params["nation"])
-    if params.get("element"):
-        filter_expr = filter_expr & Attr("elements").contains(params["element"])
+    nation_filter = params.get("nation")
+    element_filter = params.get("element")
 
     try:
-        resp = table.scan(FilterExpression=filter_expr)
+        resp = table.scan(FilterExpression=Attr("EntityType").eq("Bender"))
         items = resp.get("Items", [])
     except Exception as exc:
-        return respond(500, {"error": str(exc)})
+        return respond(500, {"error": f"scan failed: {exc}"})
 
-    return respond(200, items)
+    # Apply filters in Python to avoid Dynamo filter quirks
+    if nation_filter:
+        items = [i for i in items if i.get("nation") == nation_filter]
+    if element_filter:
+        items = [i for i in items if element_filter in (i.get("elements") or [])]
+
+    return respond(200, clean(items))
 
 
 def get_techniques(event, context):

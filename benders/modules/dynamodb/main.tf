@@ -36,7 +36,7 @@ resource "aws_dynamodb_table_item" "bender_aang" {
     name       = { S = "Aang" }
     nation     = { S = "Air" }
     elements   = { SS = ["Air"] }
-    imageUrl   = { S = "/img/aang.png" }
+    imageUrl   = { S = "/img/aang.jpeg" }
     bio        = { S = "Last Airbender; lover of cabbages." }
   })
 }
@@ -52,7 +52,7 @@ resource "aws_dynamodb_table_item" "bender_katara" {
     name       = { S = "Katara" }
     nation     = { S = "Water" }
     elements   = { SS = ["Water"] }
-    imageUrl   = { S = "/img/katara.png" }
+    imageUrl   = { S = "/img/katara.jpeg" }
     bio        = { S = "Master Waterbender and healer from the Southern Water Tribe." }
   })
 }
@@ -68,7 +68,7 @@ resource "aws_dynamodb_table_item" "bender_toph" {
     name       = { S = "Toph Beifong" }
     nation     = { S = "Earth" }
     elements   = { SS = ["Earth", "Metal"] }
-    imageUrl   = { S = "/img/toph.png" }
+    imageUrl   = { S = "/img/toph.jpeg" }
     bio        = { S = "Blind Bandit and inventor of metalbending." }
   })
 }
@@ -84,7 +84,7 @@ resource "aws_dynamodb_table_item" "bender_zuko" {
     name       = { S = "Prince Zuko" }
     nation     = { S = "Fire" }
     elements   = { SS = ["Fire", "Lightning"] }
-    imageUrl   = { S = "/img/zuko.png" }
+    imageUrl   = { S = "/img/zuko.jpeg" }
     bio        = { S = "Banished prince turned Fire Lord; master of dual-wielding broadswords." }
   })
 }
@@ -99,7 +99,7 @@ resource "aws_dynamodb_table_item" "nation_air" {
     EntityID   = { S = "Air" }
     name       = { S = "Air Nomads" }
     lore       = { S = "Peaceful monastic culture; bending style rooted in Ba Gua Zhang and freedom." }
-    imageUrl   = { S = "/img/air-nation.png" }
+    imageUrl   = { S = "/img/air-nation.jpeg" }
   })
 }
 
@@ -113,7 +113,7 @@ resource "aws_dynamodb_table_item" "nation_water" {
     EntityID   = { S = "Water" }
     name       = { S = "Water Tribe" }
     lore       = { S = "Northern and Southern Tribes thrive on adaptability, healing, and tidal forms." }
-    imageUrl   = { S = "/img/water-tribe.png" }
+    imageUrl   = { S = "/img/water-tribe.jpeg" }
   })
 }
 
@@ -127,7 +127,7 @@ resource "aws_dynamodb_table_item" "nation_earth" {
     EntityID   = { S = "Earth" }
     name       = { S = "Earth Kingdom" }
     lore       = { S = "Stoic, rooted, and enduring; home of Omashu, Ba Sing Se, and metalbending origins." }
-    imageUrl   = { S = "/img/earth-kingdom.png" }
+    imageUrl   = { S = "/img/earth-kingdom.jpeg" }
   })
 }
 
@@ -158,7 +158,7 @@ resource "aws_dynamodb_table_item" "technique_ice_shield" {
     difficulty   = { S = "Intermediate" }
     origin       = { S = "Northern Water Tribe" }
     description  = { S = "Rapidly freezes water into a defensive barrier to deflect projectiles." }
-    imageUrl     = { S = "/img/ice-shield.png" }
+    imageUrl     = { S = "/img/ice-shield.jpeg" }
   })
 }
 
@@ -175,7 +175,7 @@ resource "aws_dynamodb_table_item" "technique_metalbending" {
     difficulty   = { S = "Advanced" }
     origin       = { S = "Beifong School" }
     description  = { S = "Manipulates trace earth within metal to bend refined structures." }
-    imageUrl     = { S = "/img/metalbending.png" }
+    imageUrl     = { S = "/img/metalbending.jpeg" }
   })
 }
 
@@ -192,7 +192,7 @@ resource "aws_dynamodb_table_item" "technique_lightning" {
     difficulty   = { S = "Advanced" }
     origin       = { S = "Fire Nation Royal Line" }
     description  = { S = "Channels lightning through the body’s paths to safely discharge it." }
-    imageUrl     = { S = "/img/lightning-redirection.png" }
+    imageUrl     = { S = "/img/lightning-redirection.jpeg" }
   })
 }
 
@@ -209,6 +209,6 @@ resource "aws_dynamodb_table_item" "technique_air_scooter" {
     difficulty   = { S = "Beginner" }
     origin       = { S = "Air Nomads" }
     description  = { S = "A spinning sphere of air used for agile movement and quick travel." }
-    imageUrl     = { S = "/img/air-scooter.png" }
+    imageUrl     = { S = "/img/air-scooter.jpeg" }
   })
 }

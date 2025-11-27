@@ -1,0 +1,26 @@
+version: 0.2
+
+env:
+  variables:
+    S3_BUCKET_NAME: "avatar-archive-dev-frontend"
+    CLOUDFRONT_DISTRIBUTION_ID: "YOUR_DISTRIBUTION_ID"
+
+phases:
+  install:
+    commands:
+      - echo "Installing AWS CLI v2 (if needed)..."
+      # On standard CodeBuild images, AWS CLI is already installed
+      - aws --version
+  build:
+    commands:
+      - echo "Syncing frontend/ to S3 bucket: $S3_BUCKET_NAME"
+      - aws s3 sync frontend/ s3://$S3_BUCKET_NAME --delete
+      - echo "Creating CloudFront invalidation for /*"
+      - aws cloudfront create-invalidation \
+        --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+        --paths "/*"
+
+artifacts:
+  files:
+    - "**/*"
+  discard-paths: yes

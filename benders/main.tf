@@ -43,6 +43,7 @@ module "lambda_api" {
   lambda_source_dir = "${path.module}/../lambda"
   user_pool_arn     = module.cognito.user_pool_arn
 }
+
 module "cognito" {
   source = "./modules/cognito"
 

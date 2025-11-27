@@ -27,12 +27,17 @@
     const nations = ["Air", "Water", "Earth", "Fire"];
     const container = document.getElementById("nations");
 
+    function bust(src) {
+      if (!src || !src.startsWith("/img/")) return src || placeholder;
+      return `${src}?v=2`;
+    }
+
     async function loadNations() {
       container.innerHTML = "";
       for (const name of nations) {
         try {
           const data = await Api.getNation(name);
-          const imgSrc = data.imageUrl || placeholder;
+          const imgSrc = bust(data.imageUrl || placeholder);
           const card = document.createElement("div");
           card.className = "card";
           card.innerHTML = `
